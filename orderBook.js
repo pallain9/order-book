@@ -1,31 +1,32 @@
-function masterBook(existingBook, incomingOrder) {
-  existingBook.push(incomingOrder)
-
-  return existingBook
-}
-
-
-
-function matchingOrder(existingBook, incomingOrder) {
-
-  if (existingBook[1] === incomingOrder[1])
-    return []
-}
-
-function reducedOrder(existingBook, incomingOrder) {
-  //if buy and sell have the same quantity return []
-}
 function reconcileOrder(existingBook, incomingOrder) {
-  /* 1. if the existing book is empty add order and send back
-   2. if the order has the same type, then add them to the book
-   3. if the existing book exists and a new order comins in with a different type, then add to the existing book
-   4. if the existing book quantity matches the incomingOrder quantity are matching, then remove it.
-   5. if the existing book contains a larger quantity than the incomingOrder, then fulfill the order and reduce the quantity by the smaller value
-   6. if the incomingOrder quantity is greater than the existingBook quantity then fulfill the order and keep the remaining incomingOrder as the new existingBook
-   BONUS
-   1. if the existingBook price is greater than the incomingOrder then fulfill the order
-   2. if the incomingOrder price is greater than the existingBook price then do not fullfill the order
-   */
-  return masterBook(existingBook, incomingOrder)
+  let updatedBook = []
+  for (var i = 0; i <= existingBook.length; i++)
+    if (existingBook.length === 0) {
+      existingBook.push(incomingOrder)
+      return existingBook
+    }
+
+    else if ((existingBook[i].type === 'buy' && incomingOrder.type === 'sell') && (existingBook[i].quantity === incomingOrder.quantity) && (existingBook[i].price === incomingOrder.price)) {
+      return updatedBook
+    }
+    else if ((existingBook[i].type === 'buy' && incomingOrder.type === 'sell') && (existingBook[i].quantity > incomingOrder.quantity) && (existingBook[i].price === incomingOrder.price)) {
+      const updatedQuantity = existingBook[i].quantity - incomingOrder.quantity
+      existingBook[i].quantity = updatedQuantity
+      return existingBook
+    }
+    else if ((existingBook[i].type === 'buy' && incomingOrder.type === 'sell') && (existingBook[i].quantity < incomingOrder.quantity) && (existingBook[i].price === incomingOrder.price)) {
+      let partialOrder = []
+      const updatedQuantity = incomingOrder.quantity - existingBook[i].quantity
+      incomingOrder.quantity = updatedQuantity
+      partialOrder.push(incomingOrder)
+      return partialOrder
+    }
+    else if ((existingBook[i].type === 'buy') && (incomingOrder.type === 'sell') && (existingBook[i].quantity === incomingOrder.quantity) && (incomingOrder.price <= existingBook[i].price)) {
+      return updatedBook
+    }
+    else {
+      existingBook.push(incomingOrder)
+      return existingBook
+    }
 }
 module.exports = reconcileOrder
